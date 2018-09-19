@@ -32,7 +32,8 @@ screeningEventRouter.post(
                 location: req.body.location,
                 superEvent: req.body.superEvent,
                 name: req.body.name,
-                eventStatus: req.body.eventStatus
+                eventStatus: req.body.eventStatus,
+                releaseTime: moment(req.body.releaseTime).toDate()
             };
             const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
             const event = await eventRepo.saveScreeningEvent({ attributes: eventAttributes });
@@ -128,7 +129,8 @@ screeningEventRouter.put(
                 location: req.body.location,
                 superEvent: req.body.superEvent,
                 name: req.body.name,
-                eventStatus: req.body.eventStatus
+                eventStatus: req.body.eventStatus,
+                releaseTime: (req.body.releaseTime !== undefined) ? moment(req.body.releaseTime).toDate() : undefined
             };
             const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
             await eventRepo.saveScreeningEvent({ id: req.params.id, attributes: eventAttributes });
