@@ -46,6 +46,31 @@ screeningEventRouter.post('', permitScopes_1.default(['admin']), (_, __, next) =
         next(error);
     }
 }));
+screeningEventRouter.post('/saveMultiple', permitScopes_1.default(['admin']), (_, __, next) => {
+    next();
+}, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    try {
+        const eventAttributes = req.body.attributes.map((attr) => ({
+            typeOf: chevre.factory.eventType.ScreeningEvent,
+            doorTime: (attr.doorTime !== undefined) ? moment(attr.doorTime).toDate() : undefined,
+            startDate: moment(attr.startDate).toDate(),
+            endDate: moment(attr.endDate).toDate(),
+            ticketTypeGroup: attr.ticketTypeGroup,
+            workPerformed: attr.workPerformed,
+            location: attr.location,
+            superEvent: attr.superEvent,
+            name: attr.name,
+            eventStatus: attr.eventStatus,
+            releaseTime: attr.releaseTime !== undefined ? moment(attr.releaseTime).toDate() : undefined
+        }));
+        const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
+        const events = yield eventRepo.saveMultipleScreeningEvent(eventAttributes);
+        res.status(http_status_1.CREATED).json(events);
+    }
+    catch (error) {
+        next(error);
+    }
+}));
 screeningEventRouter.get('', permitScopes_1.default(['admin', 'events', 'events.read-only']), (req, __, next) => {
     req.checkQuery('inSessionFrom').optional().isISO8601().withMessage('inSessionFrom must be ISO8601 timestamp');
     req.checkQuery('inSessionThrough').optional().isISO8601().withMessage('inSessionThrough must be ISO8601 timestamp');
@@ -205,4 +230,3 @@ screeningEventRouter.get('/:id/offers', permitScopes_1.default(['admin', 'events
     }
 }));
 exports.default = screeningEventRouter;
-//# sourceMappingURL=screeningEvent.js.map

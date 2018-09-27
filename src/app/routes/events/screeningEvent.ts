@@ -43,6 +43,38 @@ screeningEventRouter.post(
         }
     }
 );
+screeningEventRouter.post(
+    '/saveMultiple',
+    permitScopes(['admin']),
+    (_, __, next) => {
+        next();
+    },
+    validator,
+    async (req, res, next) => {
+        try {
+            const eventAttributes: chevre.factory.event.screeningEvent.IAttributes[] = req.body.attributes.map((
+                attr: chevre.factory.event.screeningEvent.IAttributes
+            ) => ({
+                typeOf: chevre.factory.eventType.ScreeningEvent,
+                doorTime: (attr.doorTime !== undefined) ? moment(attr.doorTime).toDate() : undefined,
+                startDate: moment(attr.startDate).toDate(),
+                endDate: moment(attr.endDate).toDate(),
+                ticketTypeGroup: attr.ticketTypeGroup,
+                workPerformed: attr.workPerformed,
+                location: attr.location,
+                superEvent: attr.superEvent,
+                name: attr.name,
+                eventStatus: attr.eventStatus,
+                releaseTime: attr.releaseTime !== undefined ? moment(attr.releaseTime).toDate() : undefined
+            }));
+            const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
+            const events = await eventRepo.saveMultipleScreeningEvent(eventAttributes);
+            res.status(CREATED).json(events);
+        } catch (error) {
+            next(error);
+        }
+    }
+);
 screeningEventRouter.get(
     '',
     permitScopes(['admin', 'events', 'events.read-only']),
