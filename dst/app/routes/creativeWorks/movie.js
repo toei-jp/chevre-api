@@ -29,7 +29,11 @@ movieRouter.post('', permitScopes_1.default(['admin']), (_, __, next) => {
             identifier: req.body.identifier,
             name: req.body.name,
             duration: moment.duration(req.body.duration).toISOString(),
-            contentRating: req.body.contentRating
+            contentRating: req.body.contentRating,
+            subtitle: req.body.subtitle,
+            datePublished: req.body.datePublished,
+            scheduleEndDate: req.body.scheduleEndDate,
+            distribution: req.body.distribution
         };
         const creativeWorkRepo = new chevre.repository.CreativeWork(chevre.mongoose.connection);
         yield creativeWorkRepo.saveMovie(movie);
@@ -50,7 +54,10 @@ movieRouter.get('', permitScopes_1.default(['admin', 'creativeWorks', 'creativeW
             page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1,
             sort: req.query.sort,
             identifier: req.query.identifier,
-            name: req.query.name
+            name: req.query.name,
+            datePublishedFrom: req.query.datePublishedFrom,
+            datePublishedTo: req.query.datePublishedTo,
+            checkScheduleEndDate: req.query.checkScheduleEndDate
         };
         const totalCount = yield creativeWorkRepo.countMovies(searchCoinditions);
         const movies = yield creativeWorkRepo.searchMovies(searchCoinditions);
@@ -73,6 +80,19 @@ movieRouter.get('/:identifier', permitScopes_1.default(['admin', 'creativeWorks'
         next(error);
     }
 }));
+movieRouter.get('/getRating/:identifier', permitScopes_1.default(['admin', 'creativeWorks', 'creativeWorks.read-only']), (_, __, next) => {
+    next();
+}, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    try {
+        const creativeWorkRepo = new chevre.repository.CreativeWork(chevre.mongoose.connection);
+        const movie = yield creativeWorkRepo.findMovieByIdentifier({ identifier: req.params.identifier });
+        const rating = movie.contentRating;
+        res.json(rating);
+    }
+    catch (error) {
+        next(error);
+    }
+}));
 movieRouter.put('/:identifier', permitScopes_1.default(['admin']), (_, __, next) => {
     next();
 }, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -82,7 +102,11 @@ movieRouter.put('/:identifier', permitScopes_1.default(['admin']), (_, __, next)
             identifier: req.params.identifier,
             name: req.body.name,
             duration: moment.duration(Number(req.body.duration), 'm').toISOString(),
-            contentRating: req.body.contentRating
+            contentRating: req.body.contentRating,
+            subtitle: req.body.subtitle,
+            datePublished: req.body.datePublished,
+            scheduleEndDate: req.body.scheduleEndDate,
+            distribution: req.body.distribution
         };
         const creativeWorkRepo = new chevre.repository.CreativeWork(chevre.mongoose.connection);
         yield creativeWorkRepo.saveMovie(movie);

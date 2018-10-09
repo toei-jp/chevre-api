@@ -28,7 +28,12 @@ ticketTypesRouter.post('', permitScopes_1.default(['admin']), (_, __, next) => {
             name: req.body.name,
             description: req.body.description,
             notes: req.body.notes,
-            charge: req.body.charge
+            charge: req.body.charge,
+            boxOnly: req.body.boxOnly,
+            nameForManagementSite: req.body.nameForManagementSite,
+            nameForPrinting: req.body.nameForPrinting,
+            seatReservationUnit: req.body.seatReservationUnit,
+            subject: req.body.subject
         };
         const ticketTypeRepo = new chevre.repository.TicketType(chevre.mongoose.connection);
         yield ticketTypeRepo.createTicketType(ticketType);
@@ -71,6 +76,22 @@ ticketTypesRouter.get('/:id', permitScopes_1.default(['admin', 'ticketTypes', 't
         next(error);
     }
 }));
+/**
+ * 関連券種グループ
+ * ticketTypeGroups relation to ticketType
+ */
+ticketTypesRouter.get('/getTicketTypeGroupList/:ticketTypeId', permitScopes_1.default(['admin', 'ticketTypes', 'ticketTypes.read-only']), (_, __, next) => {
+    next();
+}, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    try {
+        const ticketTypeRepo = new chevre.repository.TicketType(chevre.mongoose.connection);
+        const ticketTypeGroups = yield ticketTypeRepo.findTicketTypeGroupByTicketTypeId({ ticketTypeId: req.params.ticketTypeId });
+        res.json(ticketTypeGroups);
+    }
+    catch (error) {
+        next(error);
+    }
+}));
 ticketTypesRouter.put('/:id', permitScopes_1.default(['admin']), (_, __, next) => {
     next();
 }, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -80,7 +101,12 @@ ticketTypesRouter.put('/:id', permitScopes_1.default(['admin']), (_, __, next) =
             name: req.body.name,
             description: req.body.description,
             notes: req.body.notes,
-            charge: req.body.charge
+            charge: req.body.charge,
+            boxOnly: req.body.boxOnly,
+            nameForManagementSite: req.body.nameForManagementSite,
+            nameForPrinting: req.body.nameForPrinting,
+            seatReservationUnit: req.body.seatReservationUnit,
+            subject: req.body.subject
         };
         const ticketTypeRepo = new chevre.repository.TicketType(chevre.mongoose.connection);
         yield ticketTypeRepo.updateTicketType(ticketType);

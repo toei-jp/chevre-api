@@ -36,7 +36,13 @@ screeningEventSeriesRouter.post('', permitScopes_1.default(['admin']), (_, __, n
             duration: (req.body.duration !== undefined) ? moment.duration(req.body.duration).toISOString() : undefined,
             startDate: (req.body.startDate !== undefined) ? moment(req.body.startDate).toDate() : undefined,
             endDate: (req.body.endDate !== undefined) ? moment(req.body.endDate).toDate() : undefined,
-            eventStatus: req.body.eventStatus
+            eventStatus: req.body.eventStatus,
+            movieSubtitleName: req.body.movieSubtitleName,
+            signageDisplayName: req.body.signageDisplayName,
+            signageDislaySubtitleName: req.body.signageDislaySubtitleName,
+            summaryStartDay: req.body.summaryStartDay,
+            mvtkFlg: req.body.mvtkFlg,
+            description: req.body.description
         };
         const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
         const event = yield eventRepo.saveScreeningEventSeries({ attributes: eventAttributes });
@@ -113,7 +119,13 @@ screeningEventSeriesRouter.put('/:id', permitScopes_1.default(['admin']), (_, __
             duration: (req.body.duration !== undefined) ? moment.duration(req.body.duration).toISOString() : undefined,
             startDate: (req.body.startDate !== undefined) ? moment(req.body.startDate).toDate() : undefined,
             endDate: (req.body.endDate !== undefined) ? moment(req.body.endDate).toDate() : undefined,
-            eventStatus: req.body.eventStatus
+            eventStatus: req.body.eventStatus,
+            movieSubtitleName: req.body.movieSubtitleName,
+            signageDisplayName: req.body.signageDisplayName,
+            signageDislaySubtitleName: req.body.signageDislaySubtitleName,
+            summaryStartDay: req.body.summaryStartDay,
+            mvtkFlg: req.body.mvtkFlg,
+            description: req.body.description
         };
         const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
         yield eventRepo.saveScreeningEventSeries({ id: req.params.id, attributes: eventAttributes });

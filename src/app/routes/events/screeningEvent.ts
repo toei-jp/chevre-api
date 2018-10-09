@@ -33,7 +33,8 @@ screeningEventRouter.post(
                 superEvent: req.body.superEvent,
                 name: req.body.name,
                 eventStatus: req.body.eventStatus,
-                releaseTime: moment(req.body.releaseTime).toDate()
+                releaseTime: moment(req.body.releaseTime).toDate(),
+                mvtkExcludeFlg: req.body.mvtkExcludeFlg
             };
             const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
             const event = await eventRepo.saveScreeningEvent({ attributes: eventAttributes });
@@ -162,7 +163,8 @@ screeningEventRouter.put(
                 superEvent: req.body.superEvent,
                 name: req.body.name,
                 eventStatus: req.body.eventStatus,
-                releaseTime: (req.body.releaseTime !== undefined) ? moment(req.body.releaseTime).toDate() : undefined
+                releaseTime: (req.body.releaseTime !== undefined) ? moment(req.body.releaseTime).toDate() : undefined,
+                mvtkExcludeFlg: req.body.mvtkExcludeFlg
             };
             const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
             await eventRepo.saveScreeningEvent({ id: req.params.id, attributes: eventAttributes });

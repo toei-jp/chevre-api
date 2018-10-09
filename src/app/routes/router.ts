@@ -5,6 +5,7 @@ import * as express from 'express';
 
 import creativeWorksRouter from './creativeWorks';
 import devRouter from './dev';
+import distributeRouter from './distributions/distributeRouter';
 import eventsRouter from './events';
 import placesRouter from './places';
 import reservationsRouter from './reservations';
@@ -20,6 +21,7 @@ const router = express.Router();
 // })
 
 router.use('/creativeWorks', creativeWorksRouter);
+router.use('/distributions', distributeRouter);
 router.use('/places', placesRouter);
 router.use('/events', eventsRouter);
 router.use('/reservations', reservationsRouter);
