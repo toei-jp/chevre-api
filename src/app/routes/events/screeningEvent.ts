@@ -164,7 +164,11 @@ screeningEventRouter.put(
                 name: req.body.name,
                 eventStatus: req.body.eventStatus,
                 releaseTime: (req.body.releaseTime !== undefined) ? moment(req.body.releaseTime).toDate() : undefined,
-                mvtkExcludeFlg: req.body.mvtkExcludeFlg
+                mvtkExcludeFlg: req.body.mvtkExcludeFlg,
+                saleStartDate: req.body.saleStartDate,
+                onlineDisplayStartDate: req.body.onlineDisplayStartDate,
+                maxSheetNumber: req.body.maxSheetNumber,
+                precedingSaleFlg: req.body.precedingSaleFlg
             };
             const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
             await eventRepo.saveScreeningEvent({ id: req.params.id, attributes: eventAttributes });
