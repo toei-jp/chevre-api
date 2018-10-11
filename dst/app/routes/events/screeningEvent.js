@@ -36,8 +36,10 @@ screeningEventRouter.post('', permitScopes_1.default(['admin']), (_, __, next) =
             superEvent: req.body.superEvent,
             name: req.body.name,
             eventStatus: req.body.eventStatus,
-            releaseTime: moment(req.body.releaseTime).toDate(),
-            mvtkExcludeFlg: req.body.mvtkExcludeFlg
+            saleStartDate: moment(req.body.saleStartDate).toDate(),
+            mvtkExcludeFlg: req.body.mvtkExcludeFlg,
+            maxSeatNumber: req.body.maxSeatNumber,
+            preSaleFlg: req.body.preSaleFlg
         };
         const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
         const event = yield eventRepo.saveScreeningEvent({ attributes: eventAttributes });
@@ -62,7 +64,7 @@ screeningEventRouter.post('/saveMultiple', permitScopes_1.default(['admin']), (_
             superEvent: attr.superEvent,
             name: attr.name,
             eventStatus: attr.eventStatus,
-            releaseTime: attr.releaseTime !== undefined ? moment(attr.releaseTime).toDate() : undefined
+            saleStartDate: attr.saleStartDate !== undefined ? moment(attr.saleStartDate).toDate() : undefined
         }));
         const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
         const events = yield eventRepo.saveMultipleScreeningEvent(eventAttributes);
@@ -143,12 +145,12 @@ screeningEventRouter.put('/:id', permitScopes_1.default(['admin']), (_, __, next
             superEvent: req.body.superEvent,
             name: req.body.name,
             eventStatus: req.body.eventStatus,
-            releaseTime: (req.body.releaseTime !== undefined) ? moment(req.body.releaseTime).toDate() : undefined,
+            // releaseTime: (req.body.releaseTime !== undefined) ? moment(req.body.releaseTime).toDate() : undefined,
             mvtkExcludeFlg: req.body.mvtkExcludeFlg,
             saleStartDate: req.body.saleStartDate,
             onlineDisplayStartDate: req.body.onlineDisplayStartDate,
-            maxSheetNumber: req.body.maxSheetNumber,
-            precedingSaleFlg: req.body.precedingSaleFlg
+            maxSeatNumber: req.body.maxSeatNumber,
+            preSaleFlg: req.body.preSaleFlg
         };
         const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
         yield eventRepo.saveScreeningEvent({ id: req.params.id, attributes: eventAttributes });

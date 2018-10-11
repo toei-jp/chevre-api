@@ -33,7 +33,9 @@ ticketTypesRouter.post('', permitScopes_1.default(['admin']), (_, __, next) => {
             nameForManagementSite: req.body.nameForManagementSite,
             nameForPrinting: req.body.nameForPrinting,
             seatReservationUnit: req.body.seatReservationUnit,
-            subject: req.body.subject
+            subject: req.body.subject,
+            onlineOnly: req.body.onlineOnly,
+            typeOfNote: req.body.typeOfNote
         };
         const ticketTypeRepo = new chevre.repository.TicketType(chevre.mongoose.connection);
         yield ticketTypeRepo.createTicketType(ticketType);
@@ -106,7 +108,9 @@ ticketTypesRouter.put('/:id', permitScopes_1.default(['admin']), (_, __, next) =
             nameForManagementSite: req.body.nameForManagementSite,
             nameForPrinting: req.body.nameForPrinting,
             seatReservationUnit: req.body.seatReservationUnit,
-            subject: req.body.subject
+            subject: req.body.subject,
+            onlineOnly: req.body.boxOnly,
+            typeOfNote: req.body.typeOfNote
         };
         const ticketTypeRepo = new chevre.repository.TicketType(chevre.mongoose.connection);
         yield ticketTypeRepo.updateTicketType(ticketType);
