@@ -44,8 +44,8 @@ ticketTypesRouter.get(
                 page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1,
                 id: req.query.id,
                 name: req.query.name,
-                charge: req.query.charge,
-                notSort: req.query.notSort
+                price: req.query.price,
+                idHasChoose: req.query.idHasChoose
             };
             const totalCount = await ticketTypeRepo.countTicketTypes(searchCoinditions);
             const ticketTypes = await ticketTypeRepo.searchTicketTypes(searchCoinditions);
