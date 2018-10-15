@@ -56,7 +56,9 @@ ticketTypesRouter.get('', permitScopes_1.default(['admin', 'ticketTypes', 'ticke
             limit: (req.query.limit !== undefined) ? Math.min(req.query.limit, 100) : 100,
             page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1,
             id: req.query.id,
-            name: req.query.name
+            name: req.query.name,
+            charge: req.query.charge,
+            notSort: req.query.notSort
         };
         const totalCount = yield ticketTypeRepo.countTicketTypes(searchCoinditions);
         const ticketTypes = yield ticketTypeRepo.searchTicketTypes(searchCoinditions);
