@@ -20,23 +20,8 @@ ticketTypesRouter.post(
     validator,
     async (req, res, next) => {
         try {
-            const ticketType: chevre.factory.ticketType.ITicketType = {
-                id: req.body.id,
-                name: req.body.name,
-                description: req.body.description,
-                notes: req.body.notes,
-                charge: req.body.charge,
-                boxOnly: req.body.boxOnly,
-                nameForManagementSite: req.body.nameForManagementSite,
-                nameForPrinting: req.body.nameForPrinting,
-                seatReservationUnit: req.body.seatReservationUnit,
-                subject: req.body.subject,
-                onlineOnly: req.body.onlineOnly,
-                typeOfNote: req.body.typeOfNote,
-                indicatorColor: req.body.indicatorColor
-            };
             const ticketTypeRepo = new chevre.repository.TicketType(chevre.mongoose.connection);
-            await ticketTypeRepo.createTicketType(ticketType);
+            const ticketType = await ticketTypeRepo.createTicketType(req.body);
             res.status(CREATED).json(ticketType);
         } catch (error) {
             next(error);
@@ -118,23 +103,8 @@ ticketTypesRouter.put(
     validator,
     async (req, res, next) => {
         try {
-            const ticketType: chevre.factory.ticketType.ITicketType = {
-                id: req.body.id,
-                name: req.body.name,
-                description: req.body.description,
-                notes: req.body.notes,
-                charge: req.body.charge,
-                boxOnly: req.body.boxOnly,
-                nameForManagementSite: req.body.nameForManagementSite,
-                nameForPrinting: req.body.nameForPrinting,
-                seatReservationUnit: req.body.seatReservationUnit,
-                subject: req.body.subject,
-                onlineOnly: req.body.boxOnly,
-                typeOfNote: req.body.typeOfNote,
-                indicatorColor: req.body.indicatorColor
-            };
             const ticketTypeRepo = new chevre.repository.TicketType(chevre.mongoose.connection);
-            await ticketTypeRepo.updateTicketType(ticketType);
+            await ticketTypeRepo.updateTicketType(req.body);
             res.status(NO_CONTENT).end();
         } catch (error) {
             next(error);
