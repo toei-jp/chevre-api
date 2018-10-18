@@ -92,14 +92,6 @@ subjectRouter.put('/:id', permitScopes_1.default(['admin']), (_, __, next) => {
     next();
 }, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        // const subject: chevre.factory.subject.ISubjectAttributes = {
-        //     subjectClassificationCd: req.body.subjectClassificationCd,
-        //     subjectClassificationName: req.body.subjectClassificationName,
-        //     subjectCd: req.body.subjectCd,
-        //     subjectName: req.body.subjectName,
-        //     detailCd: req.body.detailCd,
-        //     detailName: req.body.detailName
-        // };
         const subjectRepo = new chevre.repository.Subject(chevre.mongoose.connection);
         yield subjectRepo.save({
             id: req.params.id,

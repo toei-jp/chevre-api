@@ -109,14 +109,6 @@ subjectRouter.put(
     validator,
     async (req, res, next) => {
         try {
-            // const subject: chevre.factory.subject.ISubjectAttributes = {
-            //     subjectClassificationCd: req.body.subjectClassificationCd,
-            //     subjectClassificationName: req.body.subjectClassificationName,
-            //     subjectCd: req.body.subjectCd,
-            //     subjectName: req.body.subjectName,
-            //     detailCd: req.body.detailCd,
-            //     detailName: req.body.detailName
-            // };
             const subjectRepo = new chevre.repository.Subject(chevre.mongoose.connection);
             await subjectRepo.save({
                 id: req.params.id,
