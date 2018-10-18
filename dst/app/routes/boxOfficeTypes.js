@@ -16,18 +16,18 @@ const express_1 = require("express");
 const authentication_1 = require("../middlewares/authentication");
 const permitScopes_1 = require("../middlewares/permitScopes");
 const validator_1 = require("../middlewares/validator");
-const entertainmentTypesRouter = express_1.Router();
-entertainmentTypesRouter.use(authentication_1.default);
-entertainmentTypesRouter.get('/getEntertainmentTypeList', permitScopes_1.default(['admin', 'entertainmentTypes', 'entertainmentTypes.read-only']), (_, __, next) => {
+const boxOfficeTypesRouter = express_1.Router();
+boxOfficeTypesRouter.use(authentication_1.default);
+boxOfficeTypesRouter.get('/getBoxOfficeTypeList', permitScopes_1.default(['admin', 'boxOfficeTypes', 'boxOfficeTypes.read-only']), (_, __, next) => {
     next();
 }, validator_1.default, (__, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const entertainmentTypeRepo = new chevre.repository.EntertainmentType(chevre.mongoose.connection);
-        const entertainmentTypes = yield entertainmentTypeRepo.getEntertainmentType();
-        res.json(entertainmentTypes);
+        const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(chevre.mongoose.connection);
+        const boxOfficeTypes = yield boxOfficeTypeRepo.getBoxOfficeTypeList();
+        res.json(boxOfficeTypes);
     }
     catch (error) {
         next(error);
     }
 }));
-exports.default = entertainmentTypesRouter;
+exports.default = boxOfficeTypesRouter;
