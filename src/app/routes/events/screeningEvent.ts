@@ -131,6 +131,34 @@ screeningEventRouter.get(
     }
 );
 screeningEventRouter.get(
+    '/countTicketTypePerEvent',
+    permitScopes(['admin']),
+    (req, __, next) => {
+        req.checkQuery('startFrom').optional().isISO8601().withMessage('startFrom must be ISO8601 timestamp');
+        req.checkQuery('startThrough').optional().isISO8601().withMessage('startThrough must be ISO8601 timestamp');
+        next();
+    },
+    validator,
+    async (req, res, next) => {
+        try {
+            const reservationRepo = new chevre.repository.Reservation(chevre.mongoose.connection);
+            const events = await chevre.service.event.countTicketTypePerEvent({
+                // tslint:disable-next-line:no-magic-numbers
+                limit: (req.query.limit !== undefined) ? Math.min(req.query.limit, 100) : 100,
+                page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1,
+                id: req.query.id,
+                startFrom: (req.query.startFrom !== undefined) ? moment(req.query.startFrom).toDate() : undefined,
+                startThrough: (req.query.startThrough !== undefined) ? moment(req.query.startThrough).toDate() : undefined
+            })({
+                reservation: reservationRepo
+            });
+            res.json(events);
+        } catch (error) {
+            next(error);
+        }
+    }
+);
+screeningEventRouter.get(
     '/:id',
     permitScopes(['admin', 'events', 'events.read-only']),
     (_, __, next) => {
