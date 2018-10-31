@@ -57,24 +57,7 @@ screeningEventRouter.post('/saveMultiple', permitScopes_1.default(['admin']), (_
     next();
 }, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const eventAttributes = req.body.attributes.map((attr) => ({
-            typeOf: chevre.factory.eventType.ScreeningEvent,
-            doorTime: moment(attr.doorTime).toDate(),
-            startDate: moment(attr.startDate).toDate(),
-            endDate: moment(attr.endDate).toDate(),
-            ticketTypeGroup: attr.ticketTypeGroup,
-            workPerformed: attr.workPerformed,
-            location: attr.location,
-            superEvent: attr.superEvent,
-            name: attr.name,
-            eventStatus: attr.eventStatus,
-            saleStartDate: moment(attr.saleStartDate).toDate(),
-            mvtkExcludeFlg: attr.mvtkExcludeFlg,
-            maxSeatNumber: attr.maxSeatNumber,
-            onlineDisplayStartDate: moment(attr.onlineDisplayStartDate).toDate(),
-            endSaleTimeAfterScreening: attr.endSaleTimeAfterScreening,
-            preSaleFlg: attr.preSaleFlg
-        }));
+        const eventAttributes = req.body.attributes.map((attr) => (Object.assign({}, attr, { typeOf: chevre.factory.eventType.ScreeningEvent, doorTime: moment(attr.doorTime).toDate(), startDate: moment(attr.startDate).toDate(), endDate: moment(attr.endDate).toDate(), saleStartDate: moment(attr.saleStartDate).toDate(), onlineDisplayStartDate: moment(attr.onlineDisplayStartDate).toDate() })));
         const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
         const events = yield eventRepo.saveMultipleScreeningEvent(eventAttributes);
         res.status(http_status_1.CREATED).json(events);

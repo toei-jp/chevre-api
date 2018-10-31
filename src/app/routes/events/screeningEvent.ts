@@ -62,22 +62,13 @@ screeningEventRouter.post(
             const eventAttributes: chevre.factory.event.screeningEvent.IAttributes[] = req.body.attributes.map((
                 attr: chevre.factory.event.screeningEvent.IAttributes
             ) => ({
+                ...attr,
                 typeOf: chevre.factory.eventType.ScreeningEvent,
                 doorTime: moment(attr.doorTime).toDate(),
                 startDate: moment(attr.startDate).toDate(),
                 endDate: moment(attr.endDate).toDate(),
-                ticketTypeGroup: attr.ticketTypeGroup,
-                workPerformed: attr.workPerformed,
-                location: attr.location,
-                superEvent: attr.superEvent,
-                name: attr.name,
-                eventStatus: attr.eventStatus,
                 saleStartDate: moment(attr.saleStartDate).toDate(),
-                mvtkExcludeFlg: attr.mvtkExcludeFlg,
-                maxSeatNumber: attr.maxSeatNumber,
-                onlineDisplayStartDate: moment(attr.onlineDisplayStartDate).toDate(),
-                endSaleTimeAfterScreening: attr.endSaleTimeAfterScreening,
-                preSaleFlg: attr.preSaleFlg
+                onlineDisplayStartDate: moment(attr.onlineDisplayStartDate).toDate()
             }));
             const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
             const events = await eventRepo.saveMultipleScreeningEvent(eventAttributes);
