@@ -3,6 +3,8 @@
  */
 import * as chevre from '@toei-jp/chevre-domain';
 import { Router } from 'express';
+// tslint:disable-next-line:no-submodule-imports
+import { body, query } from 'express-validator/check';
 import { CREATED, NO_CONTENT } from 'http-status';
 import * as moment from 'moment';
 
@@ -16,28 +18,30 @@ screeningEventRouter.use(authentication);
 screeningEventRouter.post(
     '',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
+    ...[
+        body('typeOf').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('doorTime').optional().isISO8601().toDate(),
+        body('startDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
+            .isISO8601().toDate(),
+        body('endDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
+            .isISO8601().toDate(),
+        body('ticketTypeGroup').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('workPerformed').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('location').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('superEvent').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('name').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('eventStatus').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('offers').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('offers.availabilityStarts').not().isEmpty().isISO8601().toDate(),
+        body('offers.availabilityEnds').not().isEmpty().isISO8601().toDate(),
+        body('offers.validFrom').not().isEmpty().isISO8601().toDate(),
+        body('offers.validThrough').not().isEmpty().isISO8601().toDate(),
+        body('saleStartDate').optional().isISO8601().toDate()
+    ],
     validator,
     async (req, res, next) => {
         try {
-            const eventAttributes: chevre.factory.event.screeningEvent.IAttributes = {
-                typeOf: chevre.factory.eventType.ScreeningEvent,
-                doorTime: (req.body.doorTime !== undefined) ? moment(req.body.doorTime).toDate() : undefined,
-                startDate: moment(req.body.startDate).toDate(),
-                endDate: moment(req.body.endDate).toDate(),
-                ticketTypeGroup: req.body.ticketTypeGroup,
-                workPerformed: req.body.workPerformed,
-                location: req.body.location,
-                superEvent: req.body.superEvent,
-                name: req.body.name,
-                eventStatus: req.body.eventStatus,
-                saleStartDate: moment(req.body.saleStartDate).toDate(),
-                mvtkExcludeFlg: req.body.mvtkExcludeFlg,
-                maxSeatNumber: req.body.maxSeatNumber,
-                preSaleFlg: req.body.preSaleFlg
-            };
+            const eventAttributes: chevre.factory.event.screeningEvent.IAttributes = req.body;
             const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
             const event = await eventRepo.saveScreeningEvent({ attributes: eventAttributes });
             res.status(CREATED).json(event);
@@ -86,43 +90,30 @@ screeningEventRouter.post(
 screeningEventRouter.get(
     '',
     permitScopes(['admin', 'events', 'events.read-only']),
-    (req, __, next) => {
-        req.checkQuery('inSessionFrom').optional().isISO8601().withMessage('inSessionFrom must be ISO8601 timestamp');
-        req.checkQuery('inSessionThrough').optional().isISO8601().withMessage('inSessionThrough must be ISO8601 timestamp');
-        req.checkQuery('startFrom').optional().isISO8601().withMessage('startFrom must be ISO8601 timestamp');
-        req.checkQuery('startThrough').optional().isISO8601().withMessage('startThrough must be ISO8601 timestamp');
-        req.checkQuery('endFrom').optional().isISO8601().withMessage('endFrom must be ISO8601 timestamp');
-        req.checkQuery('endThrough').optional().isISO8601().withMessage('endThrough must be ISO8601 timestamp');
-
-        next();
-    },
+    ...[
+        query('inSessionFrom').optional().isISO8601().toDate(),
+        query('inSessionThrough').optional().isISO8601().toDate(),
+        query('startFrom').optional().isISO8601().toDate(),
+        query('startThrough').optional().isISO8601().toDate(),
+        query('endFrom').optional().isISO8601().toDate(),
+        query('endThrough').optional().isISO8601().toDate(),
+        query('offers.availableFrom').optional().isISO8601().toDate(),
+        query('offers.availableThrough').optional().isISO8601().toDate(),
+        query('offers.validFrom').optional().isISO8601().toDate(),
+        query('offers.validThrough').optional().isISO8601().toDate()
+    ],
     validator,
     async (req, res, next) => {
         try {
             const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
-            const aggregationRepo = new chevre.repository.aggregation.ScreeningEvent(redis.getClient());
             const searchCoinditions: chevre.factory.event.screeningEvent.ISearchConditions = {
+                ...req.query,
                 // tslint:disable-next-line:no-magic-numbers
                 limit: (req.query.limit !== undefined) ? Math.min(req.query.limit, 100) : 100,
-                page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1,
-                sort: req.query.sort,
-                name: req.query.name,
-                inSessionFrom: (req.query.inSessionFrom !== undefined) ? moment(req.query.inSessionFrom).toDate() : undefined,
-                inSessionThrough: (req.query.inSessionThrough !== undefined) ? moment(req.query.inSessionThrough).toDate() : undefined,
-                startFrom: (req.query.startFrom !== undefined) ? moment(req.query.startFrom).toDate() : undefined,
-                startThrough: (req.query.startThrough !== undefined) ? moment(req.query.startThrough).toDate() : undefined,
-                endFrom: (req.query.endFrom !== undefined) ? moment(req.query.endFrom).toDate() : undefined,
-                endThrough: (req.query.endThrough !== undefined) ? moment(req.query.endThrough).toDate() : undefined,
-                eventStatuses: (Array.isArray(req.query.eventStatuses)) ? req.query.eventStatuses : undefined,
-                superEvent: req.query.superEvent
+                page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1
             };
-            let events = await eventRepo.searchScreeningEvents(searchCoinditions);
+            const events = await eventRepo.searchScreeningEvents(searchCoinditions);
             const totalCount = await eventRepo.countScreeningEvents(searchCoinditions);
-            // 集計情報を追加
-            const aggregations = await aggregationRepo.findAll();
-            events = events.map((e) => {
-                return { ...e, ...aggregations[e.id] };
-            });
             res.set('X-Total-Count', totalCount.toString());
             res.json(events);
         } catch (error) {
@@ -161,9 +152,6 @@ screeningEventRouter.get(
 screeningEventRouter.get(
     '/:id',
     permitScopes(['admin', 'events', 'events.read-only']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {
@@ -181,30 +169,30 @@ screeningEventRouter.get(
 screeningEventRouter.put(
     '/:id',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
+    ...[
+        body('typeOf').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('doorTime').optional().isISO8601().toDate(),
+        body('startDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
+            .isISO8601().toDate(),
+        body('endDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
+            .isISO8601().toDate(),
+        body('ticketTypeGroup').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('workPerformed').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('location').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('superEvent').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('name').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('eventStatus').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('offers').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('offers.availabilityStarts').not().isEmpty().isISO8601().toDate(),
+        body('offers.availabilityEnds').not().isEmpty().isISO8601().toDate(),
+        body('offers.validFrom').not().isEmpty().isISO8601().toDate(),
+        body('offers.validThrough').not().isEmpty().isISO8601().toDate(),
+        body('saleStartDate').optional().isISO8601().toDate()
+    ],
     validator,
     async (req, res, next) => {
         try {
-            const eventAttributes: chevre.factory.event.screeningEvent.IAttributes = {
-                typeOf: chevre.factory.eventType.ScreeningEvent,
-                doorTime: (req.body.doorTime !== undefined) ? moment(req.body.doorTime).toDate() : undefined,
-                startDate: moment(req.body.startDate).toDate(),
-                endDate: moment(req.body.endDate).toDate(),
-                ticketTypeGroup: req.body.ticketTypeGroup,
-                workPerformed: req.body.workPerformed,
-                location: req.body.location,
-                superEvent: req.body.superEvent,
-                name: req.body.name,
-                eventStatus: req.body.eventStatus,
-                // releaseTime: (req.body.releaseTime !== undefined) ? moment(req.body.releaseTime).toDate() : undefined,
-                mvtkExcludeFlg: req.body.mvtkExcludeFlg,
-                saleStartDate: req.body.saleStartDate,
-                onlineDisplayStartDate: req.body.onlineDisplayStartDate,
-                maxSeatNumber: req.body.maxSeatNumber,
-                preSaleFlg: req.body.preSaleFlg
-            };
+            const eventAttributes: chevre.factory.event.screeningEvent.IAttributes = req.body;
             const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
             await eventRepo.saveScreeningEvent({ id: req.params.id, attributes: eventAttributes });
             res.status(NO_CONTENT).end();
@@ -216,9 +204,6 @@ screeningEventRouter.put(
 screeningEventRouter.delete(
     '/:id',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {
@@ -239,9 +224,6 @@ screeningEventRouter.delete(
 screeningEventRouter.get(
     '/:id/offers',
     permitScopes(['admin', 'events', 'events.read-only']),
-    (_1, _2, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {
@@ -261,7 +243,7 @@ screeningEventRouter.get(
                 throw new chevre.factory.errors.NotFound('Screening room');
             }
             const screeningRoomSections = screeningRoom.containsPlace;
-            const offers: chevre.factory.event.screeningEvent.IOffer[] = screeningRoomSections;
+            const offers: chevre.factory.event.screeningEvent.IScreeningRoomSectionOffer[] = screeningRoomSections;
             offers.forEach((offer) => {
                 const seats = offer.containsPlace;
                 const seatSection = offer.branchCode;
@@ -272,6 +254,7 @@ screeningEventRouter.get(
                     );
                     seat.offers = [{
                         typeOf: 'Offer',
+                        priceCurrency: chevre.factory.priceCurrency.JPY,
                         availability: (unavailableOffer !== undefined)
                             ? chevre.factory.itemAvailability.OutOfStock
                             : chevre.factory.itemAvailability.InStock
@@ -290,9 +273,6 @@ screeningEventRouter.get(
 screeningEventRouter.get(
     '/:id/offers/ticket',
     permitScopes(['admin', 'events', 'events.read-only']),
-    (_1, _2, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {

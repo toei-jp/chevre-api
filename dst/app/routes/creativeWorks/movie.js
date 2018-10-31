@@ -24,17 +24,7 @@ movieRouter.post('', permitScopes_1.default(['admin']), (_, __, next) => {
     next();
 }, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const movie = {
-            typeOf: chevre.factory.creativeWorkType.Movie,
-            identifier: req.body.identifier,
-            name: req.body.name,
-            duration: moment.duration(req.body.duration).toISOString(),
-            contentRating: req.body.contentRating,
-            subtitle: req.body.subtitle,
-            datePublished: req.body.datePublished,
-            scheduleEndDate: req.body.scheduleEndDate,
-            distribution: req.body.distribution
-        };
+        const movie = Object.assign({}, req.body, { duration: moment.duration(req.body.duration).toISOString() });
         const creativeWorkRepo = new chevre.repository.CreativeWork(chevre.mongoose.connection);
         yield creativeWorkRepo.saveMovie(movie);
         res.status(http_status_1.CREATED).json(movie);
@@ -48,17 +38,9 @@ movieRouter.get('', permitScopes_1.default(['admin', 'creativeWorks', 'creativeW
 }, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
         const creativeWorkRepo = new chevre.repository.CreativeWork(chevre.mongoose.connection);
-        const searchCoinditions = {
+        const searchCoinditions = Object.assign({}, req.query, { 
             // tslint:disable-next-line:no-magic-numbers no-single-line-block-comment
-            limit: (req.query.limit !== undefined) ? Math.min(req.query.limit, 100) : 100,
-            page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1,
-            sort: req.query.sort,
-            identifier: req.query.identifier,
-            name: req.query.name,
-            datePublishedFrom: req.query.datePublishedFrom,
-            datePublishedTo: req.query.datePublishedTo,
-            checkScheduleEndDate: req.query.checkScheduleEndDate
-        };
+            limit: (req.query.limit !== undefined) ? Math.min(req.query.limit, 100) : 100, page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1 });
         const totalCount = yield creativeWorkRepo.countMovies(searchCoinditions);
         const movies = yield creativeWorkRepo.searchMovies(searchCoinditions);
         res.set('X-Total-Count', totalCount.toString());
@@ -97,17 +79,7 @@ movieRouter.put('/:identifier', permitScopes_1.default(['admin']), (_, __, next)
     next();
 }, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const movie = {
-            typeOf: chevre.factory.creativeWorkType.Movie,
-            identifier: req.params.identifier,
-            name: req.body.name,
-            duration: moment.duration(Number(req.body.duration), 'm').toISOString(),
-            contentRating: req.body.contentRating,
-            subtitle: req.body.subtitle,
-            datePublished: req.body.datePublished,
-            scheduleEndDate: req.body.scheduleEndDate,
-            distribution: req.body.distribution
-        };
+        const movie = Object.assign({}, req.body, { duration: moment.duration(Number(req.body.duration), 'm').toISOString() });
         const creativeWorkRepo = new chevre.repository.CreativeWork(chevre.mongoose.connection);
         yield creativeWorkRepo.saveMovie(movie);
         res.status(http_status_1.NO_CONTENT).end();
