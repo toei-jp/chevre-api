@@ -54,23 +54,23 @@ screeningEventRouter.post('', permitScopes_1.default(['admin']), ...[
     }
 }));
 screeningEventRouter.post('/saveMultiple', permitScopes_1.default(['admin']), ...[
-    check_1.body('attributes.typeOf').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
-    check_1.body('attributes.doorTime').optional().isISO8601().toDate(),
-    check_1.body('attributes.startDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
+    check_1.body('attributes.*.typeOf').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+    check_1.body('attributes.*.doorTime').optional().isISO8601().toDate(),
+    check_1.body('attributes.*.startDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
         .isISO8601().toDate(),
-    check_1.body('attributes.endDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
+    check_1.body('attributes.*.endDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
         .isISO8601().toDate(),
-    check_1.body('attributes.ticketTypeGroup').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
-    check_1.body('attributes.workPerformed').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
-    check_1.body('attributes.location').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
-    check_1.body('attributes.superEvent').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
-    check_1.body('attributes.name').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
-    check_1.body('attributes.eventStatus').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
-    check_1.body('attributes.offers').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
-    check_1.body('attributes.offers.availabilityStarts').not().isEmpty().isISO8601().toDate(),
-    check_1.body('attributes.offers.availabilityEnds').not().isEmpty().isISO8601().toDate(),
-    check_1.body('attributes.offers.validFrom').not().isEmpty().isISO8601().toDate(),
-    check_1.body('attributes.offers.validThrough').not().isEmpty().isISO8601().toDate()
+    check_1.body('attributes.*.ticketTypeGroup').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+    check_1.body('attributes.*.workPerformed').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+    check_1.body('attributes.*.location').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+    check_1.body('attributes.*.superEvent').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+    check_1.body('attributes.*.name').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+    check_1.body('attributes.*.eventStatus').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+    check_1.body('attributes.*.offers').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+    check_1.body('attributes.*.offers.availabilityStarts').not().isEmpty().isISO8601().toDate(),
+    check_1.body('attributes.*.offers.availabilityEnds').not().isEmpty().isISO8601().toDate(),
+    check_1.body('attributes.*.offers.validFrom').not().isEmpty().isISO8601().toDate(),
+    check_1.body('attributes.*.offers.validThrough').not().isEmpty().isISO8601().toDate()
 ], validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
         const eventAttributes = req.body.attributes;
