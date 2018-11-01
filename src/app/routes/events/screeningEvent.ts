@@ -53,23 +53,29 @@ screeningEventRouter.post(
 screeningEventRouter.post(
     '/saveMultiple',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
+    ...[
+        body('attributes.typeOf').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('attributes.doorTime').optional().isISO8601().toDate(),
+        body('attributes.startDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
+            .isISO8601().toDate(),
+        body('attributes.endDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
+            .isISO8601().toDate(),
+        body('attributes.ticketTypeGroup').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('attributes.workPerformed').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('attributes.location').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('attributes.superEvent').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('attributes.name').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('attributes.eventStatus').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('attributes.offers').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
+        body('attributes.offers.availabilityStarts').not().isEmpty().isISO8601().toDate(),
+        body('attributes.offers.availabilityEnds').not().isEmpty().isISO8601().toDate(),
+        body('attributes.offers.validFrom').not().isEmpty().isISO8601().toDate(),
+        body('attributes.offers.validThrough').not().isEmpty().isISO8601().toDate()
+    ],
     validator,
     async (req, res, next) => {
         try {
-            const eventAttributes: chevre.factory.event.screeningEvent.IAttributes[] = req.body.attributes.map((
-                attr: chevre.factory.event.screeningEvent.IAttributes
-            ) => ({
-                ...attr,
-                typeOf: chevre.factory.eventType.ScreeningEvent,
-                doorTime: moment(attr.doorTime).toDate(),
-                startDate: moment(attr.startDate).toDate(),
-                endDate: moment(attr.endDate).toDate(),
-                saleStartDate: moment(attr.saleStartDate).toDate(),
-                onlineDisplayStartDate: moment(attr.onlineDisplayStartDate).toDate()
-            }));
+            const eventAttributes: chevre.factory.event.screeningEvent.IAttributes[] = req.body.attributes;
             const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
             const events = await eventRepo.saveMultipleScreeningEvent(eventAttributes);
             res.status(CREATED).json(events);
