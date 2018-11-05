@@ -11,8 +11,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * oauthミドルウェア
  */
-const express_middleware_1 = require("@motionpicture/express-middleware");
 const chevre = require("@toei-jp/chevre-domain");
+const express_middleware_1 = require("@motionpicture/express-middleware");
 const createDebug = require("debug");
 const debug = createDebug('chevre-api:middlewares');
 // 許可発行者リスト

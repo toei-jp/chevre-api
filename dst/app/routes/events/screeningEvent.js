@@ -40,13 +40,24 @@ screeningEventRouter.post('', permitScopes_1.default(['admin']), ...[
     check_1.body('offers.availabilityStarts').not().isEmpty().isISO8601().toDate(),
     check_1.body('offers.availabilityEnds').not().isEmpty().isISO8601().toDate(),
     check_1.body('offers.validFrom').not().isEmpty().isISO8601().toDate(),
-    check_1.body('offers.validThrough').not().isEmpty().isISO8601().toDate(),
-    check_1.body('saleStartDate').optional().isISO8601().toDate()
+    check_1.body('offers.validThrough').not().isEmpty().isISO8601().toDate()
 ], validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
         const eventAttributes = req.body;
         const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
         const event = yield eventRepo.saveScreeningEvent({ attributes: eventAttributes });
+        const aggregateTask = {
+            name: chevre.factory.taskName.AggregateScreeningEvent,
+            status: chevre.factory.taskStatus.Ready,
+            runsAt: new Date(),
+            remainingNumberOfTries: 3,
+            lastTriedAt: null,
+            numberOfTried: 0,
+            executionResults: [],
+            data: event
+        };
+        const taskRepo = new chevre.repository.Task(chevre.mongoose.connection);
+        yield taskRepo.save(aggregateTask);
         res.status(http_status_1.CREATED).json(event);
     }
     catch (error) {
@@ -76,6 +87,20 @@ screeningEventRouter.post('/saveMultiple', permitScopes_1.default(['admin']), ..
         const eventAttributes = req.body.attributes;
         const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
         const events = yield eventRepo.saveMultipleScreeningEvent(eventAttributes);
+        const taskRepo = new chevre.repository.Task(chevre.mongoose.connection);
+        yield Promise.all(events.map((event) => __awaiter(this, void 0, void 0, function* () {
+            const aggregateTask = {
+                name: chevre.factory.taskName.AggregateScreeningEvent,
+                status: chevre.factory.taskStatus.Ready,
+                runsAt: new Date(),
+                remainingNumberOfTries: 3,
+                lastTriedAt: null,
+                numberOfTried: 0,
+                executionResults: [],
+                data: event
+            };
+            yield taskRepo.save(aggregateTask);
+        })));
         res.status(http_status_1.CREATED).json(events);
     }
     catch (error) {
@@ -161,13 +186,24 @@ screeningEventRouter.put('/:id', permitScopes_1.default(['admin']), ...[
     check_1.body('offers.availabilityStarts').not().isEmpty().isISO8601().toDate(),
     check_1.body('offers.availabilityEnds').not().isEmpty().isISO8601().toDate(),
     check_1.body('offers.validFrom').not().isEmpty().isISO8601().toDate(),
-    check_1.body('offers.validThrough').not().isEmpty().isISO8601().toDate(),
-    check_1.body('saleStartDate').optional().isISO8601().toDate()
+    check_1.body('offers.validThrough').not().isEmpty().isISO8601().toDate()
 ], validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
         const eventAttributes = req.body;
         const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
-        yield eventRepo.saveScreeningEvent({ id: req.params.id, attributes: eventAttributes });
+        const event = yield eventRepo.saveScreeningEvent({ id: req.params.id, attributes: eventAttributes });
+        const aggregateTask = {
+            name: chevre.factory.taskName.AggregateScreeningEvent,
+            status: chevre.factory.taskStatus.Ready,
+            runsAt: new Date(),
+            remainingNumberOfTries: 3,
+            lastTriedAt: null,
+            numberOfTried: 0,
+            executionResults: [],
+            data: event
+        };
+        const taskRepo = new chevre.repository.Task(chevre.mongoose.connection);
+        yield taskRepo.save(aggregateTask);
         res.status(http_status_1.NO_CONTENT).end();
     }
     catch (error) {

@@ -35,8 +35,7 @@ screeningEventRouter.post(
         body('offers.availabilityStarts').not().isEmpty().isISO8601().toDate(),
         body('offers.availabilityEnds').not().isEmpty().isISO8601().toDate(),
         body('offers.validFrom').not().isEmpty().isISO8601().toDate(),
-        body('offers.validThrough').not().isEmpty().isISO8601().toDate(),
-        body('saleStartDate').optional().isISO8601().toDate()
+        body('offers.validThrough').not().isEmpty().isISO8601().toDate()
     ],
     validator,
     async (req, res, next) => {
@@ -44,6 +43,20 @@ screeningEventRouter.post(
             const eventAttributes: chevre.factory.event.screeningEvent.IAttributes = req.body;
             const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
             const event = await eventRepo.saveScreeningEvent({ attributes: eventAttributes });
+
+            const aggregateTask: chevre.factory.task.aggregateScreeningEvent.IAttributes = {
+                name: chevre.factory.taskName.AggregateScreeningEvent,
+                status: chevre.factory.taskStatus.Ready,
+                runsAt: new Date(),
+                remainingNumberOfTries: 3,
+                lastTriedAt: null,
+                numberOfTried: 0,
+                executionResults: [],
+                data: event
+            };
+            const taskRepo = new chevre.repository.Task(chevre.mongoose.connection);
+            await taskRepo.save(aggregateTask);
+
             res.status(CREATED).json(event);
         } catch (error) {
             next(error);
@@ -78,6 +91,22 @@ screeningEventRouter.post(
             const eventAttributes: chevre.factory.event.screeningEvent.IAttributes[] = req.body.attributes;
             const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
             const events = await eventRepo.saveMultipleScreeningEvent(eventAttributes);
+
+            const taskRepo = new chevre.repository.Task(chevre.mongoose.connection);
+            await Promise.all(events.map(async (event) => {
+                const aggregateTask: chevre.factory.task.aggregateScreeningEvent.IAttributes = {
+                    name: chevre.factory.taskName.AggregateScreeningEvent,
+                    status: chevre.factory.taskStatus.Ready,
+                    runsAt: new Date(),
+                    remainingNumberOfTries: 3,
+                    lastTriedAt: null,
+                    numberOfTried: 0,
+                    executionResults: [],
+                    data: event
+                };
+                await taskRepo.save(aggregateTask);
+            }));
+
             res.status(CREATED).json(events);
         } catch (error) {
             next(error);
@@ -183,15 +212,28 @@ screeningEventRouter.put(
         body('offers.availabilityStarts').not().isEmpty().isISO8601().toDate(),
         body('offers.availabilityEnds').not().isEmpty().isISO8601().toDate(),
         body('offers.validFrom').not().isEmpty().isISO8601().toDate(),
-        body('offers.validThrough').not().isEmpty().isISO8601().toDate(),
-        body('saleStartDate').optional().isISO8601().toDate()
+        body('offers.validThrough').not().isEmpty().isISO8601().toDate()
     ],
     validator,
     async (req, res, next) => {
         try {
             const eventAttributes: chevre.factory.event.screeningEvent.IAttributes = req.body;
             const eventRepo = new chevre.repository.Event(chevre.mongoose.connection);
-            await eventRepo.saveScreeningEvent({ id: req.params.id, attributes: eventAttributes });
+            const event = await eventRepo.saveScreeningEvent({ id: req.params.id, attributes: eventAttributes });
+
+            const aggregateTask: chevre.factory.task.aggregateScreeningEvent.IAttributes = {
+                name: chevre.factory.taskName.AggregateScreeningEvent,
+                status: chevre.factory.taskStatus.Ready,
+                runsAt: new Date(),
+                remainingNumberOfTries: 3,
+                lastTriedAt: null,
+                numberOfTried: 0,
+                executionResults: [],
+                data: event
+            };
+            const taskRepo = new chevre.repository.Task(chevre.mongoose.connection);
+            await taskRepo.save(aggregateTask);
+
             res.status(NO_CONTENT).end();
         } catch (error) {
             next(error);
