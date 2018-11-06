@@ -23,6 +23,8 @@ movieRouter.post(
                 ...req.body,
                 duration: moment.duration(req.body.duration).toISOString()
             };
+            const creativeWorkRepo = new chevre.repository.CreativeWork(chevre.mongoose.connection);
+            await creativeWorkRepo.saveMovie(movie);
             res.status(CREATED).json(movie);
         } catch (error) {
             next(error);
@@ -67,6 +69,7 @@ movieRouter.get(
         }
     }
 );
+
 movieRouter.get(
     '/getRating/:identifier',
     permitScopes(['admin', 'creativeWorks', 'creativeWorks.read-only']),
@@ -85,6 +88,7 @@ movieRouter.get(
         }
     }
 );
+
 movieRouter.put(
     '/:identifier',
     permitScopes(['admin']),
