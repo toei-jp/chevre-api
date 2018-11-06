@@ -12,12 +12,10 @@ import validator from '../../middlewares/validator';
 
 const movieRouter = Router();
 movieRouter.use(authentication);
+
 movieRouter.post(
     '',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {
@@ -25,20 +23,16 @@ movieRouter.post(
                 ...req.body,
                 duration: moment.duration(req.body.duration).toISOString()
             };
-            const creativeWorkRepo = new chevre.repository.CreativeWork(chevre.mongoose.connection);
-            await creativeWorkRepo.saveMovie(movie);
             res.status(CREATED).json(movie);
         } catch (error) {
             next(error);
         }
     }
 );
+
 movieRouter.get(
     '',
     permitScopes(['admin', 'creativeWorks', 'creativeWorks.read-only']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {
@@ -58,12 +52,10 @@ movieRouter.get(
         }
     }
 );
+
 movieRouter.get(
     '/:identifier',
     permitScopes(['admin', 'creativeWorks', 'creativeWorks.read-only']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {
@@ -96,15 +88,12 @@ movieRouter.get(
 movieRouter.put(
     '/:identifier',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {
             const movie: chevre.factory.creativeWork.movie.ICreativeWork = {
                 ...req.body,
-                duration: moment.duration(Number(req.body.duration), 'm').toISOString()
+                duration: moment.duration(req.body.duration).toISOString()
             };
             const creativeWorkRepo = new chevre.repository.CreativeWork(chevre.mongoose.connection);
             await creativeWorkRepo.saveMovie(movie);
@@ -114,12 +103,10 @@ movieRouter.put(
         }
     }
 );
+
 movieRouter.delete(
     '/:identifier',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {
@@ -131,4 +118,5 @@ movieRouter.delete(
         }
     }
 );
+
 export default movieRouter;
