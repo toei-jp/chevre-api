@@ -5,7 +5,6 @@ import * as express from 'express';
 
 import boxOfficeTypesRouter from './boxOfficeTypes';
 import creativeWorksRouter from './creativeWorks';
-import devRouter from './dev';
 import distributeRouter from './distributions/distributeRouter';
 import eventsRouter from './events';
 import placesRouter from './places';
@@ -34,11 +33,5 @@ router.use('/subjects', subjectRouter);
 router.use('/ticketTypeGroups', ticketTypeGroupsRouter);
 router.use('/ticketTypes', ticketTypesRouter);
 router.use('/transactions', transactionsRouter);
-
-// tslint:disable-next-line:no-single-line-block-comment
-/* istanbul ignore next */
-if (process.env.NODE_ENV !== 'production') {
-    router.use('/dev', devRouter);
-}
 
 export default router;

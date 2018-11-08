@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const boxOfficeTypes_1 = require("./boxOfficeTypes");
 const creativeWorks_1 = require("./creativeWorks");
-const dev_1 = require("./dev");
 const distributeRouter_1 = require("./distributions/distributeRouter");
 const events_1 = require("./events");
 const places_1 = require("./places");
@@ -33,9 +32,4 @@ router.use('/subjects', subject_1.default);
 router.use('/ticketTypeGroups', ticketTypeGroups_1.default);
 router.use('/ticketTypes', ticketTypes_1.default);
 router.use('/transactions', transactions_1.default);
-// tslint:disable-next-line:no-single-line-block-comment
-/* istanbul ignore next */
-if (process.env.NODE_ENV !== 'production') {
-    router.use('/dev', dev_1.default);
-}
 exports.default = router;
