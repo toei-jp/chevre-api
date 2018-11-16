@@ -30,7 +30,6 @@ screeningEventRouter.post('', permitScopes_1.default(['admin']), ...[
         .isISO8601().toDate(),
     check_1.body('endDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
         .isISO8601().toDate(),
-    check_1.body('ticketTypeGroup').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
     check_1.body('workPerformed').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
     check_1.body('location').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
     check_1.body('superEvent').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
@@ -71,7 +70,6 @@ screeningEventRouter.post('/saveMultiple', permitScopes_1.default(['admin']), ..
         .isISO8601().toDate(),
     check_1.body('attributes.*.endDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
         .isISO8601().toDate(),
-    check_1.body('attributes.*.ticketTypeGroup').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
     check_1.body('attributes.*.workPerformed').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
     check_1.body('attributes.*.location').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
     check_1.body('attributes.*.superEvent').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
@@ -176,7 +174,6 @@ screeningEventRouter.put('/:id', permitScopes_1.default(['admin']), ...[
         .isISO8601().toDate(),
     check_1.body('endDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
         .isISO8601().toDate(),
-    check_1.body('ticketTypeGroup').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
     check_1.body('workPerformed').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
     check_1.body('location').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
     check_1.body('superEvent').not().isEmpty().withMessage((_, options) => `${options.path} is required`),

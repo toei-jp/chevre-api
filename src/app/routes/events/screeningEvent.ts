@@ -26,7 +26,6 @@ screeningEventRouter.post(
             .isISO8601().toDate(),
         body('endDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
             .isISO8601().toDate(),
-        body('ticketTypeGroup').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
         body('workPerformed').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
         body('location').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
         body('superEvent').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
@@ -75,7 +74,6 @@ screeningEventRouter.post(
             .isISO8601().toDate(),
         body('attributes.*.endDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
             .isISO8601().toDate(),
-        body('attributes.*.ticketTypeGroup').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
         body('attributes.*.workPerformed').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
         body('attributes.*.location').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
         body('attributes.*.superEvent').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
@@ -208,7 +206,6 @@ screeningEventRouter.put(
             .isISO8601().toDate(),
         body('endDate').not().isEmpty().withMessage((_, options) => `${options.path} is required`)
             .isISO8601().toDate(),
-        body('ticketTypeGroup').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
         body('workPerformed').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
         body('location').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
         body('superEvent').not().isEmpty().withMessage((_, options) => `${options.path} is required`),
