@@ -10,7 +10,7 @@
   ],
   "dependencies": {
     "@motionpicture/express-middleware": "^0.1.0",
-    "@toei-jp/chevre-domain": "^1.0.1-alpha.0",
+    "@toei-jp/chevre-domain": "^1.0.1-alpha.1",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "cron": "^1.5.0",
