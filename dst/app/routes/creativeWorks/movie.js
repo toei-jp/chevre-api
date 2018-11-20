@@ -56,19 +56,6 @@ movieRouter.get('/:identifier', permitScopes_1.default(['admin', 'creativeWorks'
         next(error);
     }
 }));
-movieRouter.get('/getRating/:identifier', permitScopes_1.default(['admin', 'creativeWorks', 'creativeWorks.read-only']), (_, __, next) => {
-    next();
-}, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-    try {
-        const creativeWorkRepo = new chevre.repository.CreativeWork(chevre.mongoose.connection);
-        const movie = yield creativeWorkRepo.findMovieByIdentifier({ identifier: req.params.identifier });
-        const rating = movie.contentRating;
-        res.json(rating);
-    }
-    catch (error) {
-        next(error);
-    }
-}));
 movieRouter.put('/:identifier', permitScopes_1.default(['admin']), validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
         const movie = Object.assign({}, req.body, { duration: moment.duration(req.body.duration).toISOString() });
