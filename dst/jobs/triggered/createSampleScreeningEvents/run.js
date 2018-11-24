@@ -36,7 +36,7 @@ exports.default = () => __awaiter(this, void 0, void 0, function* () {
         const ticketTypeGroups = yield ticketTypeRepo.searchTicketTypeGroups({});
         // 券種グループをランダム選定
         const ticketTypeGroup = ticketTypeGroups[Math.floor(Math.random() * ticketTypeGroups.length)];
-        const boxOfficeType = yield boxOfficeTypeRepo.findById({ id: ticketTypeGroup.boxOfficeType.id });
+        const boxOfficeType = yield boxOfficeTypeRepo.findById({ id: ticketTypeGroup.itemOffered.serviceType.id });
         const duration = Math.floor((Math.random() * 90) + 90);
         const delay = Math.floor(Math.random() * 780);
         const doorTime = moment(`${moment().add(Math.floor(Math.random() * 7), 'days').format('YYYY-MM-DD')}T09:00:00+09:00`)
@@ -44,6 +44,8 @@ exports.default = () => __awaiter(this, void 0, void 0, function* () {
         const startDate = moment(doorTime).add(10, 'minutes').toDate();
         const endDate = moment(startDate).add(duration, 'minutes').toDate();
         const offers = {
+            id: ticketTypeGroup.id,
+            name: ticketTypeGroup.name,
             typeOf: 'Offer',
             priceCurrency: chevre.factory.priceCurrency.JPY,
             availabilityEnds: endDate,
@@ -54,10 +56,6 @@ exports.default = () => __awaiter(this, void 0, void 0, function* () {
                 value: 4,
                 unitCode: chevre.factory.unitCode.C62,
                 typeOf: 'QuantitativeValue'
-            },
-            category: {
-                id: ticketTypeGroup.id,
-                name: ticketTypeGroup.name
             },
             itemOffered: {
                 serviceType: {
