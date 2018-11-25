@@ -14,9 +14,6 @@ boxOfficeTypesRouter.use(authentication);
 boxOfficeTypesRouter.get(
     '/getBoxOfficeTypeList',
     permitScopes(['admin', 'boxOfficeTypes', 'boxOfficeTypes.read-only']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (__, res, next) => {
         try {
@@ -31,9 +28,6 @@ boxOfficeTypesRouter.get(
 boxOfficeTypesRouter.get(
     '/search',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {
@@ -100,9 +94,6 @@ boxOfficeTypesRouter.post(
 boxOfficeTypesRouter.delete(
     '/:id',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {

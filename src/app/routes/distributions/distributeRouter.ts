@@ -15,9 +15,6 @@ distributeRouter.use(authentication);
 distributeRouter.get(
     '/list',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (_, res, next) => {
         try {
@@ -33,19 +30,18 @@ distributeRouter.get(
 distributeRouter.get(
     '/search',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {
             const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
-            const searchCondition = {
-                id: req.query.id,
-                name: req.query.name
+            const searchCoinditions: chevre.factory.distributions.distribute.ISearchConditions = {
+                ...req.query,
+                // tslint:disable-next-line:no-magic-numbers no-single-line-block-comment
+                limit: (req.query.limit !== undefined) ? Math.min(req.query.limit, 100) : 100,
+                page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1
             };
-            const totalCount = await distributionRepo.countDistributions(searchCondition);
-            const distributions = await distributionRepo.searchDistributions(searchCondition);
+            const totalCount = await distributionRepo.countDistributions(searchCoinditions);
+            const distributions = await distributionRepo.searchDistributions(searchCoinditions);
             res.set('X-Total-Count', totalCount.toString());
             res.json(distributions);
         } catch (error) {
@@ -102,9 +98,6 @@ distributeRouter.post(
 distributeRouter.delete(
     '/:id',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {

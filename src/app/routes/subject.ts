@@ -14,9 +14,6 @@ subjectRouter.use(authentication);
 subjectRouter.get(
     '/getSubjectList',
     permitScopes(['admin', 'subjects', 'subjects.read-only']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (__, res, next) => {
         try {
@@ -31,9 +28,6 @@ subjectRouter.get(
 subjectRouter.post(
     '',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {
@@ -58,9 +52,6 @@ subjectRouter.post(
 subjectRouter.get(
     '',
     permitScopes(['admin', 'subjects', 'subjects.read-only']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {
@@ -84,9 +75,6 @@ subjectRouter.get(
 subjectRouter.get(
     '/:id',
     permitScopes(['admin', 'subjects', 'subjects.read-only']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {
@@ -103,9 +91,6 @@ subjectRouter.get(
 subjectRouter.put(
     '/:id',
     permitScopes(['admin']),
-    (_, __, next) => {
-        next();
-    },
     validator,
     async (req, res, next) => {
         try {

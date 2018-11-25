@@ -19,9 +19,7 @@ const permitScopes_1 = require("../middlewares/permitScopes");
 const validator_1 = require("../middlewares/validator");
 const boxOfficeTypesRouter = express_1.Router();
 boxOfficeTypesRouter.use(authentication_1.default);
-boxOfficeTypesRouter.get('/getBoxOfficeTypeList', permitScopes_1.default(['admin', 'boxOfficeTypes', 'boxOfficeTypes.read-only']), (_, __, next) => {
-    next();
-}, validator_1.default, (__, res, next) => __awaiter(this, void 0, void 0, function* () {
+boxOfficeTypesRouter.get('/getBoxOfficeTypeList', permitScopes_1.default(['admin', 'boxOfficeTypes', 'boxOfficeTypes.read-only']), validator_1.default, (__, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
         const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(chevre.mongoose.connection);
         const boxOfficeTypes = yield boxOfficeTypeRepo.getBoxOfficeTypeList();
@@ -31,9 +29,7 @@ boxOfficeTypesRouter.get('/getBoxOfficeTypeList', permitScopes_1.default(['admin
         next(error);
     }
 }));
-boxOfficeTypesRouter.get('/search', permitScopes_1.default(['admin']), (_, __, next) => {
-    next();
-}, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+boxOfficeTypesRouter.get('/search', permitScopes_1.default(['admin']), validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
         const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(chevre.mongoose.connection);
         const searchCondition = {
@@ -82,9 +78,7 @@ boxOfficeTypesRouter.post('/add', permitScopes_1.default(['admin']), (req, _, ne
         next(error);
     }
 }));
-boxOfficeTypesRouter.delete('/:id', permitScopes_1.default(['admin']), (_, __, next) => {
-    next();
-}, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+boxOfficeTypesRouter.delete('/:id', permitScopes_1.default(['admin']), validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
         const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(chevre.mongoose.connection);
         yield boxOfficeTypeRepo.deleteById({

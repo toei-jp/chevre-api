@@ -19,9 +19,7 @@ const permitScopes_1 = require("../../middlewares/permitScopes");
 const validator_1 = require("../../middlewares/validator");
 const distributeRouter = express_1.Router();
 distributeRouter.use(authentication_1.default);
-distributeRouter.get('/list', permitScopes_1.default(['admin']), (_, __, next) => {
-    next();
-}, validator_1.default, (_, res, next) => __awaiter(this, void 0, void 0, function* () {
+distributeRouter.get('/list', permitScopes_1.default(['admin']), validator_1.default, (_, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
         const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
         const distributions = yield distributionRepo.getDistributions();
@@ -31,17 +29,14 @@ distributeRouter.get('/list', permitScopes_1.default(['admin']), (_, __, next) =
         next(error);
     }
 }));
-distributeRouter.get('/search', permitScopes_1.default(['admin']), (_, __, next) => {
-    next();
-}, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+distributeRouter.get('/search', permitScopes_1.default(['admin']), validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
         const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
-        const searchCondition = {
-            id: req.query.id,
-            name: req.query.name
-        };
-        const totalCount = yield distributionRepo.countDistributions(searchCondition);
-        const distributions = yield distributionRepo.searchDistributions(searchCondition);
+        const searchCoinditions = Object.assign({}, req.query, { 
+            // tslint:disable-next-line:no-magic-numbers no-single-line-block-comment
+            limit: (req.query.limit !== undefined) ? Math.min(req.query.limit, 100) : 100, page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1 });
+        const totalCount = yield distributionRepo.countDistributions(searchCoinditions);
+        const distributions = yield distributionRepo.searchDistributions(searchCoinditions);
         res.set('X-Total-Count', totalCount.toString());
         res.json(distributions);
     }
@@ -82,9 +77,7 @@ distributeRouter.post('/add', permitScopes_1.default(['admin']), (req, _, next) 
         next(error);
     }
 }));
-distributeRouter.delete('/:id', permitScopes_1.default(['admin']), (_, __, next) => {
-    next();
-}, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+distributeRouter.delete('/:id', permitScopes_1.default(['admin']), validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
         const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
         yield distributionRepo.deleteById({
