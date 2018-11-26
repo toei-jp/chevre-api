@@ -77,28 +77,6 @@ ticketTypesRouter.get(
     }
 );
 
-/**
- * 関連券種グループ
- * ticketTypeGroups relation to ticketType
- */
-ticketTypesRouter.get(
-    '/getTicketTypeGroupList/:ticketTypeId',
-    permitScopes(['admin', 'ticketTypes', 'ticketTypes.read-only']),
-    (_, __, next) => {
-        next();
-    },
-    validator,
-    async (req, res, next) => {
-        try {
-            const ticketTypeRepo = new chevre.repository.TicketType(chevre.mongoose.connection);
-            const ticketTypeGroups = await ticketTypeRepo.findTicketTypeGroupByTicketTypeId({ ticketTypeId: req.params.ticketTypeId });
-            res.json(ticketTypeGroups);
-        } catch (error) {
-            next(error);
-        }
-    }
-);
-
 ticketTypesRouter.put(
     '/:id',
     permitScopes(['admin']),
