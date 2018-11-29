@@ -12,7 +12,13 @@ import { connectMongo } from '../../../connectMongo';
 
 const debug = createDebug('chevre-api:jobs');
 
+const CREATE_SAMPLE_EVENTS_DISABLED = (process.env.CREATE_SAMPLE_EVENTS_DISABLED === '1');
+
 export default async () => {
+    if (CREATE_SAMPLE_EVENTS_DISABLED) {
+        return;
+    }
+
     const connection = await connectMongo({ defaultConnection: false });
 
     const job = new CronJob(
