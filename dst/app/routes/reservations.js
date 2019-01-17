@@ -60,6 +60,9 @@ reservationsRouter.get('/eventReservation/screeningEvent/:id', permitScopes_1.de
  */
 reservationsRouter.put('/eventReservation/screeningEvent/checkedIn', permitScopes_1.default(['admin', 'reservations.checkedIn']), validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
+        if (req.body.id === undefined && req.body.reservationNumber === undefined) {
+            throw new chevre.factory.errors.ArgumentNull('At least one of id and reservationNumber');
+        }
         const reservationRepo = new chevre.repository.Reservation(chevre.mongoose.connection);
         const taskRepo = new chevre.repository.Task(chevre.mongoose.connection);
         const reservations = yield reservationRepo.searchScreeningEventReservations({

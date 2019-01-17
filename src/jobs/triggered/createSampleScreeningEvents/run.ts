@@ -29,7 +29,9 @@ export default async () => {
             const ticketTypeRepo = new chevre.repository.TicketType(connection);
             const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(connection);
 
-            const eventSeriesList = await eventRepo.searchScreeningEventSeries({});
+            const eventSeriesList = await eventRepo.search<chevre.factory.eventType.ScreeningEventSeries>({
+                typeOf: chevre.factory.eventType.ScreeningEventSeries
+            });
             // イベントシリーズをランダム選定
             const eventSeries = eventSeriesList[Math.floor(Math.random() * eventSeriesList.length)];
             // 上映ルームをランダム選定
@@ -68,6 +70,14 @@ export default async () => {
                         id: boxOfficeType.id,
                         name: boxOfficeType.name
                     }
+                    // serviceOutput: {
+                    //     typeOf: chevre.factory.reservationType.EventReservation,
+                    //     reservedTicket: {
+                    //         ticketedSeat: {
+                    //             typeOf: chevre.factory.placeType.Seat
+                    //         }
+                    //     }
+                    // }
                 }
             };
             const eventAttributes: chevre.factory.event.screeningEvent.IAttributes = {

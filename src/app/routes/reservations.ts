@@ -73,6 +73,10 @@ reservationsRouter.put(
     validator,
     async (req, res, next) => {
         try {
+            if (req.body.id === undefined && req.body.reservationNumber === undefined) {
+                throw new chevre.factory.errors.ArgumentNull('At least one of id and reservationNumber');
+            }
+
             const reservationRepo = new chevre.repository.Reservation(chevre.mongoose.connection);
             const taskRepo = new chevre.repository.Task(chevre.mongoose.connection);
 
