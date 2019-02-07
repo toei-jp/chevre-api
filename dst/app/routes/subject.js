@@ -14,6 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const chevre = require("@toei-jp/chevre-domain");
 const express_1 = require("express");
 const http_status_1 = require("http-status");
+const mongoose = require("mongoose");
 const authentication_1 = require("../middlewares/authentication");
 const permitScopes_1 = require("../middlewares/permitScopes");
 const validator_1 = require("../middlewares/validator");
@@ -21,7 +22,7 @@ const subjectRouter = express_1.Router();
 subjectRouter.use(authentication_1.default);
 subjectRouter.get('/getSubjectList', permitScopes_1.default(['admin', 'subjects', 'subjects.read-only']), validator_1.default, (__, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const subjectRepo = new chevre.repository.Subject(chevre.mongoose.connection);
+        const subjectRepo = new chevre.repository.Subject(mongoose.connection);
         const subjects = yield subjectRepo.getSubject();
         res.json(subjects);
     }
@@ -39,7 +40,7 @@ subjectRouter.post('', permitScopes_1.default(['admin']), validator_1.default, (
         //     detailCd: req.body.detailCd,
         //     detailName: req.body.detailName
         // };
-        const subjectRepo = new chevre.repository.Subject(chevre.mongoose.connection);
+        const subjectRepo = new chevre.repository.Subject(mongoose.connection);
         yield subjectRepo.save({
             attributes: req.body.attributes
         });
@@ -51,7 +52,7 @@ subjectRouter.post('', permitScopes_1.default(['admin']), validator_1.default, (
 }));
 subjectRouter.get('', permitScopes_1.default(['admin', 'subjects', 'subjects.read-only']), validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const subjectRepo = new chevre.repository.Subject(chevre.mongoose.connection);
+        const subjectRepo = new chevre.repository.Subject(mongoose.connection);
         const searchConditions = {
             // tslint:disable-next-line:no-magic-numbers no-single-line-block-comment
             limit: (req.query.limit !== undefined) ? Math.min(req.query.limit, 100) : 100,
@@ -70,7 +71,7 @@ subjectRouter.get('', permitScopes_1.default(['admin', 'subjects', 'subjects.rea
 }));
 subjectRouter.get('/:id', permitScopes_1.default(['admin', 'subjects', 'subjects.read-only']), validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const subjectRepo = new chevre.repository.Subject(chevre.mongoose.connection);
+        const subjectRepo = new chevre.repository.Subject(mongoose.connection);
         const subject = yield subjectRepo.findSubjectById({
             id: req.params.id
         });
@@ -82,7 +83,7 @@ subjectRouter.get('/:id', permitScopes_1.default(['admin', 'subjects', 'subjects
 }));
 subjectRouter.put('/:id', permitScopes_1.default(['admin']), validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const subjectRepo = new chevre.repository.Subject(chevre.mongoose.connection);
+        const subjectRepo = new chevre.repository.Subject(mongoose.connection);
         yield subjectRepo.save({
             id: req.params.id,
             attributes: req.body.attributes

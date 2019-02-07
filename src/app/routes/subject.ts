@@ -4,6 +4,7 @@
 import * as chevre from '@toei-jp/chevre-domain';
 import { Router } from 'express';
 import { CREATED, NO_CONTENT } from 'http-status';
+import * as mongoose from 'mongoose';
 
 import authentication from '../middlewares/authentication';
 import permitScopes from '../middlewares/permitScopes';
@@ -17,7 +18,7 @@ subjectRouter.get(
     validator,
     async (__, res, next) => {
         try {
-            const subjectRepo = new chevre.repository.Subject(chevre.mongoose.connection);
+            const subjectRepo = new chevre.repository.Subject(mongoose.connection);
             const subjects = await subjectRepo.getSubject();
             res.json(subjects);
         } catch (error) {
@@ -39,7 +40,7 @@ subjectRouter.post(
             //     detailCd: req.body.detailCd,
             //     detailName: req.body.detailName
             // };
-            const subjectRepo = new chevre.repository.Subject(chevre.mongoose.connection);
+            const subjectRepo = new chevre.repository.Subject(mongoose.connection);
             await subjectRepo.save({
                 attributes: req.body.attributes
             });
@@ -55,7 +56,7 @@ subjectRouter.get(
     validator,
     async (req, res, next) => {
         try {
-            const subjectRepo = new chevre.repository.Subject(chevre.mongoose.connection);
+            const subjectRepo = new chevre.repository.Subject(mongoose.connection);
             const searchConditions: chevre.factory.subject.ISubjectSearchConditions = {
                 // tslint:disable-next-line:no-magic-numbers no-single-line-block-comment
                 limit: (req.query.limit !== undefined) ? Math.min(req.query.limit, 100) : 100,
@@ -78,7 +79,7 @@ subjectRouter.get(
     validator,
     async (req, res, next) => {
         try {
-            const subjectRepo = new chevre.repository.Subject(chevre.mongoose.connection);
+            const subjectRepo = new chevre.repository.Subject(mongoose.connection);
             const subject = await subjectRepo.findSubjectById({
                 id: req.params.id
             });
@@ -94,7 +95,7 @@ subjectRouter.put(
     validator,
     async (req, res, next) => {
         try {
-            const subjectRepo = new chevre.repository.Subject(chevre.mongoose.connection);
+            const subjectRepo = new chevre.repository.Subject(mongoose.connection);
             await subjectRepo.save({
                 id: req.params.id,
                 attributes: req.body.attributes

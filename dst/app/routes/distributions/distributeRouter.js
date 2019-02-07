@@ -13,6 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 const chevre = require("@toei-jp/chevre-domain");
 const express_1 = require("express");
+const mongoose = require("mongoose");
 const http_status_1 = require("http-status");
 const authentication_1 = require("../../middlewares/authentication");
 const permitScopes_1 = require("../../middlewares/permitScopes");
@@ -21,7 +22,7 @@ const distributeRouter = express_1.Router();
 distributeRouter.use(authentication_1.default);
 distributeRouter.get('/list', permitScopes_1.default(['admin']), validator_1.default, (_, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
+        const distributionRepo = new chevre.repository.Distributions(mongoose.connection);
         const distributions = yield distributionRepo.getDistributions();
         res.json(distributions);
     }
@@ -31,7 +32,7 @@ distributeRouter.get('/list', permitScopes_1.default(['admin']), validator_1.def
 }));
 distributeRouter.get('/search', permitScopes_1.default(['admin']), validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
+        const distributionRepo = new chevre.repository.Distributions(mongoose.connection);
         const searchCoinditions = Object.assign({}, req.query, { 
             // tslint:disable-next-line:no-magic-numbers no-single-line-block-comment
             limit: (req.query.limit !== undefined) ? Math.min(req.query.limit, 100) : 100, page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1 });
@@ -49,7 +50,7 @@ distributeRouter.put('/:id', permitScopes_1.default(['admin']), (req, _, next) =
     next();
 }, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
+        const distributionRepo = new chevre.repository.Distributions(mongoose.connection);
         yield distributionRepo.updateDistribution({
             id: req.params.id,
             name: req.body.name
@@ -66,7 +67,7 @@ distributeRouter.post('/add', permitScopes_1.default(['admin']), (req, _, next) 
     next();
 }, validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
+        const distributionRepo = new chevre.repository.Distributions(mongoose.connection);
         const distributions = yield distributionRepo.createDistribution({
             id: req.body.id,
             name: req.body.name
@@ -79,7 +80,7 @@ distributeRouter.post('/add', permitScopes_1.default(['admin']), (req, _, next) 
 }));
 distributeRouter.delete('/:id', permitScopes_1.default(['admin']), validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
+        const distributionRepo = new chevre.repository.Distributions(mongoose.connection);
         yield distributionRepo.deleteById({
             id: req.params.id
         });

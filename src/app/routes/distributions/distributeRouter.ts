@@ -3,6 +3,7 @@
  */
 import * as chevre from '@toei-jp/chevre-domain';
 import { Router } from 'express';
+import * as mongoose from 'mongoose';
 
 import { CREATED, NO_CONTENT } from 'http-status';
 import authentication from '../../middlewares/authentication';
@@ -18,7 +19,7 @@ distributeRouter.get(
     validator,
     async (_, res, next) => {
         try {
-            const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
+            const distributionRepo = new chevre.repository.Distributions(mongoose.connection);
             const distributions = await distributionRepo.getDistributions();
             res.json(distributions);
         } catch (error) {
@@ -33,7 +34,7 @@ distributeRouter.get(
     validator,
     async (req, res, next) => {
         try {
-            const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
+            const distributionRepo = new chevre.repository.Distributions(mongoose.connection);
             const searchCoinditions: chevre.factory.distributions.distribute.ISearchConditions = {
                 ...req.query,
                 // tslint:disable-next-line:no-magic-numbers no-single-line-block-comment
@@ -60,7 +61,7 @@ distributeRouter.put(
     validator,
     async (req, res, next) => {
         try {
-            const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
+            const distributionRepo = new chevre.repository.Distributions(mongoose.connection);
             await distributionRepo.updateDistribution({
                 id: req.params.id,
                 name: req.body.name
@@ -83,7 +84,7 @@ distributeRouter.post(
     validator,
     async (req, res, next) => {
         try {
-            const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
+            const distributionRepo = new chevre.repository.Distributions(mongoose.connection);
             const distributions = await distributionRepo.createDistribution({
                 id: req.body.id,
                 name: req.body.name
@@ -101,7 +102,7 @@ distributeRouter.delete(
     validator,
     async (req, res, next) => {
         try {
-            const distributionRepo = new chevre.repository.Distributions(chevre.mongoose.connection);
+            const distributionRepo = new chevre.repository.Distributions(mongoose.connection);
             await distributionRepo.deleteById({
                 id: req.params.id
             });

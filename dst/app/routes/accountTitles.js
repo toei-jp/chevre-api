@@ -16,6 +16,7 @@ const express_1 = require("express");
 // tslint:disable-next-line:no-submodule-imports
 const check_1 = require("express-validator/check");
 const http_status_1 = require("http-status");
+const mongoose = require("mongoose");
 const authentication_1 = require("../middlewares/authentication");
 const permitScopes_1 = require("../middlewares/permitScopes");
 const validator_1 = require("../middlewares/validator");
@@ -30,7 +31,7 @@ accountTitlesRouter.post('/accountTitleCategory', permitScopes_1.default(['admin
 ], validator_1.default, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
         const accountTitle = req.body;
-        const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+        const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
         yield accountTitleRepo.accountTitleModel.create(accountTitle);
         res.status(http_status_1.CREATED).json(accountTitle);
     }
@@ -45,7 +46,7 @@ accountTitlesRouter.get('/accountTitleCategory', permitScopes_1.default(['admin'
 // tslint:disable-next-line:max-func-body-length
 (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+        const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
         const searchCoinditions = Object.assign({}, req.query, { 
             // tslint:disable-next-line:no-magic-numbers no-single-line-block-comment
             limit: (req.query.limit !== undefined) ? Math.min(req.query.limit, 100) : 100, page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1 });
@@ -101,7 +102,7 @@ accountTitlesRouter.put('/accountTitleCategory/:codeValue', permitScopes_1.defau
         const accountTitle = Object.assign({}, req.body, { codeValue: req.params.codeValue });
         delete accountTitle.inCodeSet;
         delete accountTitle.hasCategoryCode;
-        const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+        const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
         const doc = yield accountTitleRepo.accountTitleModel.findOneAndUpdate({ codeValue: accountTitle.codeValue }, accountTitle, { new: true }).exec();
         if (doc === null) {
             throw new chevre.factory.errors.NotFound('AccountTitle');
@@ -125,7 +126,7 @@ accountTitlesRouter.post('/accountTitleSet', permitScopes_1.default(['admin']), 
         const accountTitleCategory = req.body.inCodeSet;
         const accountTitle = req.body;
         delete accountTitle.inCodeSet;
-        const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+        const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
         // 科目分類の存在確認
         let doc = yield accountTitleRepo.accountTitleModel.findOne({ codeValue: accountTitleCategory.codeValue }).exec();
         if (doc === null) {
@@ -152,7 +153,7 @@ accountTitlesRouter.get('/accountTitleSet', permitScopes_1.default(['admin', 'ac
 // tslint:disable-next-line:max-func-body-length
 (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+        const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
         const searchCoinditions = Object.assign({}, req.query, { 
             // tslint:disable-next-line:no-magic-numbers no-single-line-block-comment
             limit: (req.query.limit !== undefined) ? Math.min(req.query.limit, 100) : 100, page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1 });
@@ -229,7 +230,7 @@ accountTitlesRouter.put('/accountTitleSet/:codeValue', permitScopes_1.default(['
         const accountTitle = Object.assign({}, req.body, { codeValue: req.params.codeValue });
         delete accountTitle.inCodeSet;
         delete accountTitle.hasCategoryCode;
-        const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+        const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
         const doc = yield accountTitleRepo.accountTitleModel.findOneAndUpdate({ 'hasCategoryCode.codeValue': accountTitle.codeValue }, {
             'hasCategoryCode.$.name': accountTitle.name,
             'hasCategoryCode.$.description': accountTitle.description
@@ -259,7 +260,7 @@ accountTitlesRouter.post('', permitScopes_1.default(['admin']), ...[
         const accountTitleCategory = req.body.inCodeSet.inCodeSet;
         const accountTitle = req.body;
         delete accountTitle.inCodeSet;
-        const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+        const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
         // 科目の存在確認
         let doc = yield accountTitleRepo.accountTitleModel.findOne({
             codeValue: accountTitleCategory.codeValue,
@@ -290,7 +291,7 @@ accountTitlesRouter.get('', permitScopes_1.default(['admin', 'accountTitles', 'a
 // tslint:disable-next-line:max-func-body-length
 (req, res, next) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+        const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
         const searchCoinditions = Object.assign({}, req.query, { 
             // tslint:disable-next-line:no-magic-numbers no-single-line-block-comment
             limit: (req.query.limit !== undefined) ? Math.min(req.query.limit, 100) : 100, page: (req.query.page !== undefined) ? Math.max(req.query.page, 1) : 1 });
@@ -387,7 +388,7 @@ accountTitlesRouter.put('/:codeValue', permitScopes_1.default(['admin']), ...[
         const accountTitleSet = req.body.inCodeSet;
         const accountTitle = Object.assign({}, req.body, { codeValue: req.params.codeValue });
         delete accountTitle.inCodeSet;
-        const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+        const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
         const doc = yield accountTitleRepo.accountTitleModel.findOneAndUpdate({
             'hasCategoryCode.hasCategoryCode.codeValue': accountTitle.codeValue
         }, { 'hasCategoryCode.$[element].hasCategoryCode.$': accountTitle }, {

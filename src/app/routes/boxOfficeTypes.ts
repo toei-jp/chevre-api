@@ -3,6 +3,7 @@
  */
 import * as chevre from '@toei-jp/chevre-domain';
 import { Router } from 'express';
+import * as mongoose from 'mongoose';
 
 import { CREATED, NO_CONTENT } from 'http-status';
 import authentication from '../middlewares/authentication';
@@ -17,7 +18,7 @@ boxOfficeTypesRouter.get(
     validator,
     async (__, res, next) => {
         try {
-            const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(chevre.mongoose.connection);
+            const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(mongoose.connection);
             const boxOfficeTypes = await boxOfficeTypeRepo.getBoxOfficeTypeList();
             res.json(boxOfficeTypes);
         } catch (error) {
@@ -31,7 +32,7 @@ boxOfficeTypesRouter.get(
     validator,
     async (req, res, next) => {
         try {
-            const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(chevre.mongoose.connection);
+            const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(mongoose.connection);
             const searchCondition = {
                 id: req.query.id,
                 name: req.query.name
@@ -56,7 +57,7 @@ boxOfficeTypesRouter.put(
     validator,
     async (req, res, next) => {
         try {
-            const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(chevre.mongoose.connection);
+            const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(mongoose.connection);
             await boxOfficeTypeRepo.updateBoxOfficeType({
                 id: req.params.id,
                 name: req.body.name
@@ -79,7 +80,7 @@ boxOfficeTypesRouter.post(
     validator,
     async (req, res, next) => {
         try {
-            const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(chevre.mongoose.connection);
+            const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(mongoose.connection);
             const boxOfficeType = await boxOfficeTypeRepo.createBoxOfficeType({
                 id: req.body.id,
                 name: req.body.name
@@ -97,7 +98,7 @@ boxOfficeTypesRouter.delete(
     validator,
     async (req, res, next) => {
         try {
-            const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(chevre.mongoose.connection);
+            const boxOfficeTypeRepo = new chevre.repository.BoxOfficeType(mongoose.connection);
             await boxOfficeTypeRepo.deleteById({
                 id: req.params.id
             });

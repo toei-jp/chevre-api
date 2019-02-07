@@ -6,6 +6,7 @@ import { Router } from 'express';
 // tslint:disable-next-line:no-submodule-imports
 import { body } from 'express-validator/check';
 import { CREATED, NO_CONTENT } from 'http-status';
+import * as mongoose from 'mongoose';
 
 import authentication from '../middlewares/authentication';
 import permitScopes from '../middlewares/permitScopes';
@@ -28,7 +29,7 @@ accountTitlesRouter.post(
     async (req, res, next) => {
         try {
             const accountTitle: chevre.factory.accountTitle.IAccountTitle = req.body;
-            const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+            const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
             await accountTitleRepo.accountTitleModel.create(accountTitle);
             res.status(CREATED).json(accountTitle);
         } catch (error) {
@@ -47,7 +48,7 @@ accountTitlesRouter.get(
     // tslint:disable-next-line:max-func-body-length
     async (req, res, next) => {
         try {
-            const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+            const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
             const searchCoinditions: chevre.factory.accountTitle.ISearchConditions = {
                 ...req.query,
                 // tslint:disable-next-line:no-magic-numbers no-single-line-block-comment
@@ -123,7 +124,7 @@ accountTitlesRouter.put(
             delete accountTitle.inCodeSet;
             delete accountTitle.hasCategoryCode;
 
-            const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+            const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
 
             const doc = await accountTitleRepo.accountTitleModel.findOneAndUpdate(
                 { codeValue: accountTitle.codeValue },
@@ -160,7 +161,7 @@ accountTitlesRouter.post(
             const accountTitle: chevre.factory.accountTitle.IAccountTitle = req.body;
             delete accountTitle.inCodeSet;
 
-            const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+            const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
 
             // 科目分類の存在確認
             let doc = await accountTitleRepo.accountTitleModel.findOne(
@@ -200,7 +201,7 @@ accountTitlesRouter.get(
     // tslint:disable-next-line:max-func-body-length
     async (req, res, next) => {
         try {
-            const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+            const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
             const searchCoinditions: chevre.factory.accountTitle.ISearchConditions = {
                 ...req.query,
                 // tslint:disable-next-line:no-magic-numbers no-single-line-block-comment
@@ -293,7 +294,7 @@ accountTitlesRouter.put(
             delete accountTitle.inCodeSet;
             delete accountTitle.hasCategoryCode;
 
-            const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+            const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
 
             const doc = await accountTitleRepo.accountTitleModel.findOneAndUpdate(
                 { 'hasCategoryCode.codeValue': accountTitle.codeValue },
@@ -336,7 +337,7 @@ accountTitlesRouter.post(
             const accountTitle: chevre.factory.accountTitle.IAccountTitle = req.body;
             delete accountTitle.inCodeSet;
 
-            const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+            const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
 
             // 科目の存在確認
             let doc = await accountTitleRepo.accountTitleModel.findOne({
@@ -378,7 +379,7 @@ accountTitlesRouter.get(
     // tslint:disable-next-line:max-func-body-length
     async (req, res, next) => {
         try {
-            const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+            const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
             const searchCoinditions: chevre.factory.accountTitle.ISearchConditions = {
                 ...req.query,
                 // tslint:disable-next-line:no-magic-numbers no-single-line-block-comment
@@ -492,7 +493,7 @@ accountTitlesRouter.put(
             const accountTitle: chevre.factory.accountTitle.IAccountTitle = { ...req.body, codeValue: req.params.codeValue };
             delete accountTitle.inCodeSet;
 
-            const accountTitleRepo = new chevre.repository.AccountTitle(chevre.mongoose.connection);
+            const accountTitleRepo = new chevre.repository.AccountTitle(mongoose.connection);
 
             const doc = await accountTitleRepo.accountTitleModel.findOneAndUpdate(
                 {
